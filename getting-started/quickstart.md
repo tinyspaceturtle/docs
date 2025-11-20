@@ -1,15 +1,15 @@
 ---
 title: 'Quickstart'
-description: 'Get started with TinyBrain in 5 minutes'
+description: 'Get started with HeroBrain in 5 minutes'
 ---
 
 # Get Started in 5 Minutes
 
-TinyBrain is a memory infrastructure for AI applications. This guide will get you up and running quickly.
+HeroBrain is a memory infrastructure for AI applications. This guide will get you up and running quickly.
 
 ## Step 1: Get Your API Key
 
-1. Sign up at [app.tinybrain.dev](https://app.tinybrain.dev/signup)
+1. Sign up at [app.herobrain.dev](https://app.herobrain.dev/signup)
 2. Navigate to **Settings → API Keys**
 3. Click **Create API Key**
 4. Copy your key (starts with `tb_`)
@@ -23,19 +23,19 @@ TinyBrain is a memory infrastructure for AI applications. This guide will get yo
 <CodeGroup>
 
 ```bash npm
-npm install @tinybrain/sdk
+npm install @herobrain/sdk
 ```
 
 ```bash yarn
-yarn add @tinybrain/sdk
+yarn add @herobrain/sdk
 ```
 
 ```bash pnpm
-pnpm add @tinybrain/sdk
+pnpm add @herobrain/sdk
 ```
 
 ```bash Python
-pip install tinybrain
+pip install herobrain
 ```
 
 </CodeGroup>
@@ -45,10 +45,10 @@ pip install tinybrain
 <CodeGroup>
 
 ```typescript TypeScript
-import { TinyBrain } from '@tinybrain/sdk';
+import { HeroBrain } from '@herobrain/sdk';
 
-const tb = new TinyBrain({
-  apiKey: process.env.TINYBRAIN_API_KEY,
+const tb = new HeroBrain({
+  apiKey: process.env.HEROBRAIN_API_KEY,
   tenantId: 'user-123' // Your user identifier
 });
 
@@ -68,10 +68,10 @@ console.log('Memory stored:', memory.id);
 ```
 
 ```python Python
-from tinybrain import TinyBrain
+from herobrain import HeroBrain
 
-tb = TinyBrain(
-    api_key=os.environ['TINYBRAIN_API_KEY'],
+tb = HeroBrain(
+    api_key=os.environ['HEROBRAIN_API_KEY'],
     tenant_id='user-123'
 )
 
@@ -91,8 +91,8 @@ print(f'Memory stored: {memory.id}')
 ```
 
 ```bash cURL
-curl -X POST https://api.tinybrain.dev/api/v1/memory \
-  -H "Authorization: Bearer $TINYBRAIN_API_KEY" \
+curl -X POST https://api.herobrain.dev/api/v1/memory \
+  -H "Authorization: Bearer $HEROBRAIN_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tenantId": "user-123",
@@ -110,7 +110,7 @@ curl -X POST https://api.tinybrain.dev/api/v1/memory \
 
 ## Step 4: Search Memories
 
-TinyBrain uses semantic search - find by meaning, not exact text:
+HeroBrain uses semantic search - find by meaning, not exact text:
 
 <CodeGroup>
 
@@ -140,8 +140,8 @@ for memory in results:
 ```
 
 ```bash cURL
-curl -X POST https://api.tinybrain.dev/api/v1/memory/search \
-  -H "Authorization: Bearer $TINYBRAIN_API_KEY" \
+curl -X POST https://api.herobrain.dev/api/v1/memory/search \
+  -H "Authorization: Bearer $HEROBRAIN_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tenantId": "user-123",
@@ -325,7 +325,7 @@ await tb.memory.create({
 
 ## Need Help?
 
-- 💬 [Join our Discord](https://discord.gg/tinybrain)
-- 📧 Email: support@tinybrain.dev
+- 💬 [Join our Discord](https://discord.gg/herobrain)
+- 📧 Email: support@herobrain.dev
 - 📖 [Read the full docs](/)
-- 🐛 [Report a bug](https://github.com/tinybrain/tinybrain/issues)
+- 🐛 [Report a bug](https://github.com/herobrain/herobrain/issues)

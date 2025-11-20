@@ -1,0 +1,421 @@
+# SDK Quickstart
+
+Build AI applications with HeroBrain in minutes using our official SDKs.
+
+<CardGroup cols={2}>
+  <Card title="TypeScript" icon="js" href="#typescript">
+    For Node.js, Next.js, React apps
+  </Card>
+  <Card title="Python" icon="python" href="#python">
+    For FastAPI, Django, Flask apps
+  </Card>
+</CardGroup>
+
+---
+
+## TypeScript SDK
+
+### Installation
+
+<CodeGroup>
+```bash npm
+npm install @herobrain/sdk
+```
+
+```bash yarn
+yarn add @herobrain/sdk
+```
+
+```bash pnpm
+pnpm add @herobrain/sdk
+```
+</CodeGroup>
+
+### Quick Example
+
+Create your first memory in 5 lines:
+
+```typescript
+import { HeroBrain } from '@herobrain/sdk';
+
+const hb = new HeroBrain({ apiKey: process.env.HEROBRAIN_API_KEY });
+
+// Create a memory
+const memory = await hb.memories.create({
+  content: 'Met with Sarah about Q4 roadmap planning',
+  type: 'episodic',
+  metadata: { person: 'Sarah', topic: 'Q4 Planning' }
+});
+
+console.log('Memory created:', memory.id);
+```
+
+<Tip>
+  **Environment Variables** - Store your API key in `.env`: `HEROBRAIN_API_KEY=hb_live_...`
+</Tip>
+
+### Core Features
+
+<AccordionGroup>
+  <Accordion title="Create & Search Memories">
+    ```typescript
+    // Create a memory
+    const memory = await hb.memories.create({
+      content: 'Product launch scheduled for Q1 2025',
+      type: 'semantic',
+      importance: 0.9
+    });
+
+    // Semantic search
+    const results = await hb.memories.search({
+      query: 'product launch timeline',
+      limit: 5,
+      threshold: 0.7
+    });
+
+    console.log(`Found ${results.length} relevant memories`);
+    ```
+  </Accordion>
+
+  <Accordion title="AI Chat with Memory Grounding">
+    ```typescript
+    // Chat with automatic memory context
+    const response = await hb.chat.complete({
+      message: 'What are my top priorities this week?',
+      includeMemoryContext: true,
+      model: 'gpt-4o-mini'
+    });
+
+    console.log('AI Response:', response.message);
+    console.log('Memories Used:', response.memoriesReferenced);
+    console.log('Citations:', response.citations);
+    ```
+  </Accordion>
+
+  <Accordion title="Proactive Intelligence">
+    ```typescript
+    // Get VIP contacts
+    const vips = await hb.intelligence.getVIPs({
+      minImportance: 60,
+      limit: 10
+    });
+
+    // Detect blockers
+    const blockers = await hb.intelligence.detectBlockers({
+      timeWindow: 'week'
+    });
+
+    // Morning briefing
+    const briefing = await hb.proactive.getMorningBriefing();
+    console.log(briefing.summary);
+    ```
+  </Accordion>
+
+  <Accordion title="Streaming Responses">
+    ```typescript
+    // Stream chat responses
+    const stream = await hb.chat.stream({
+      message: 'Explain my meeting schedule',
+      includeMemoryContext: true
+    });
+
+    for await (const chunk of stream) {
+      if (chunk.type === 'token') {
+        process.stdout.write(chunk.content);
+      } else if (chunk.type === 'citation') {
+        console.log('\nSource:', chunk.memory.id);
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Full Example: Chat App
+
+```typescript app.ts
+import { HeroBrain } from '@herobrain/sdk';
+import express from 'express';
+
+const app = express();
+const hb = new HeroBrain({ apiKey: process.env.HEROBRAIN_API_KEY });
+
+app.post('/api/chat', async (req, res) => {
+  const { message, userId } = req.body;
+
+  // Store user message as memory
+  await hb.memories.create({
+    content: message,
+    type: 'episodic',
+    metadata: { userId, source: 'chat' }
+  });
+
+  // Get AI response with memory context
+  const response = await hb.chat.complete({
+    message,
+    includeMemoryContext: true,
+    userId
+  });
+
+  res.json({
+    message: response.message,
+    citations: response.citations,
+    memoriesUsed: response.memoriesReferenced
+  });
+});
+
+app.listen(3000, () => console.log('Chat app running on port 3000'));
+```
+
+---
+
+## Python SDK
+
+### Installation
+
+```bash
+pip install herobrain
+```
+
+### Quick Example
+
+Create your first memory in 5 lines:
+
+```python
+from herobrain import HeroBrain
+
+hb = HeroBrain(api_key="your_api_key_here")
+
+# Create a memory
+memory = hb.memories.create(
+    content="Met with Sarah about Q4 roadmap planning",
+    type="episodic",
+    metadata={"person": "Sarah", "topic": "Q4 Planning"}
+)
+
+print(f"Memory created: {memory.id}")
+```
+
+<Tip>
+  **Environment Variables** - Use `python-dotenv`: `HEROBRAIN_API_KEY=hb_live_...`
+</Tip>
+
+### Core Features
+
+<AccordionGroup>
+  <Accordion title="Create & Search Memories">
+    ```python
+    # Create a memory
+    memory = hb.memories.create(
+        content="Product launch scheduled for Q1 2025",
+        type="semantic",
+        importance=0.9
+    )
+
+    # Semantic search
+    results = hb.memories.search(
+        query="product launch timeline",
+        limit=5,
+        threshold=0.7
+    )
+
+    print(f"Found {len(results)} relevant memories")
+    ```
+  </Accordion>
+
+  <Accordion title="AI Chat with Memory Grounding">
+    ```python
+    # Chat with automatic memory context
+    response = hb.chat.complete(
+        message="What are my top priorities this week?",
+        include_memory_context=True,
+        model="gpt-4o-mini"
+    )
+
+    print("AI Response:", response.message)
+    print("Memories Used:", response.memories_referenced)
+    print("Citations:", response.citations)
+    ```
+  </Accordion>
+
+  <Accordion title="Proactive Intelligence">
+    ```python
+    # Get VIP contacts
+    vips = hb.intelligence.get_vips(
+        min_importance=60,
+        limit=10
+    )
+
+    # Detect blockers
+    blockers = hb.intelligence.detect_blockers(
+        time_window="week"
+    )
+
+    # Morning briefing
+    briefing = hb.proactive.get_morning_briefing()
+    print(briefing.summary)
+    ```
+  </Accordion>
+
+  <Accordion title="Streaming Responses">
+    ```python
+    # Stream chat responses
+    stream = hb.chat.stream(
+        message="Explain my meeting schedule",
+        include_memory_context=True
+    )
+
+    for chunk in stream:
+        if chunk.type == "token":
+            print(chunk.content, end="", flush=True)
+        elif chunk.type == "citation":
+            print(f"\nSource: {chunk.memory.id}")
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Full Example: FastAPI Chat API
+
+```python main.py
+from fastapi import FastAPI
+from herobrain import HeroBrain
+from pydantic import BaseModel
+
+app = FastAPI()
+hb = HeroBrain(api_key="your_api_key_here")
+
+class ChatRequest(BaseModel):
+    message: str
+    user_id: str
+
+@app.post("/api/chat")
+async def chat(request: ChatRequest):
+    # Store user message as memory
+    await hb.memories.create_async(
+        content=request.message,
+        type="episodic",
+        metadata={"userId": request.user_id, "source": "chat"}
+    )
+
+    # Get AI response with memory context
+    response = await hb.chat.complete_async(
+        message=request.message,
+        include_memory_context=True,
+        user_id=request.user_id
+    )
+
+    return {
+        "message": response.message,
+        "citations": response.citations,
+        "memories_used": response.memories_referenced
+    }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+```
+
+---
+
+## Authentication
+
+Get your API key from [herobrain.ai/api-keys](https://herobrain.ai/api-keys).
+
+<Warning>
+  **Never commit API keys** - Use environment variables in production
+</Warning>
+
+### Environment Variables
+
+<CodeGroup>
+```bash .env
+HEROBRAIN_API_KEY=hb_live_abc123...
+HEROBRAIN_BASE_URL=https://api.herobrain.ai  # Optional
+```
+
+```typescript TypeScript
+import { HeroBrain } from '@herobrain/sdk';
+
+const hb = new HeroBrain({
+  apiKey: process.env.HEROBRAIN_API_KEY,
+  baseURL: process.env.HEROBRAIN_BASE_URL
+});
+```
+
+```python Python
+import os
+from herobrain import HeroBrain
+
+hb = HeroBrain(
+    api_key=os.getenv("HEROBRAIN_API_KEY"),
+    base_url=os.getenv("HEROBRAIN_BASE_URL")
+)
+```
+</CodeGroup>
+
+## Rate Limits
+
+SDK requests count toward your API usage:
+
+| Plan | Requests/Month | Rate Limit |
+|------|---------------|------------|
+| **Free** | 1,000 | 10/minute |
+| **Startup** | 10,000 | 60/minute |
+| **Growth** | 100,000 | 300/minute |
+| **Enterprise** | Unlimited | Custom |
+
+<Info>
+  **Rate Limit Headers** - SDKs automatically parse `X-RateLimit-*` headers
+</Info>
+
+## Error Handling
+
+<CodeGroup>
+```typescript TypeScript
+try {
+  const memory = await hb.memories.create({
+    content: 'Test memory'
+  });
+} catch (error) {
+  if (error instanceof HeroBrainError) {
+    console.error('API Error:', error.message);
+    console.error('Status:', error.statusCode);
+    console.error('Request ID:', error.requestId);
+  }
+}
+```
+
+```python Python
+from herobrain import HeroBrain, HeroBrainError
+
+try:
+    memory = hb.memories.create(content="Test memory")
+except HeroBrainError as e:
+    print(f"API Error: {e.message}")
+    print(f"Status: {e.status_code}")
+    print(f"Request ID: {e.request_id}")
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Complete API documentation
+  </Card>
+  <Card title="Examples" icon="lightbulb" href="/examples">
+    Full code examples
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/webhooks">
+    Real-time event notifications
+  </Card>
+  <Card title="Support" icon="life-ring" href="https://herobrain.ai/support">
+    Get help from our team
+  </Card>
+</CardGroup>
+
+## SDK Versioning
+
+- **TypeScript SDK**: [npm](https://npmjs.com/package/@herobrain/sdk) · [GitHub](https://github.com/herobrain/sdk-typescript)
+- **Python SDK**: [PyPI](https://pypi.org/project/herobrain) · [GitHub](https://github.com/herobrain/sdk-python)
+
+Both SDKs follow [semantic versioning](https://semver.org/) and are automatically generated from our OpenAPI spec.
